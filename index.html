@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hello world</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="scalable">
+      <div class="content">
+        <img src="https://i.imgur.com/yv9qe2V.jpg" alt="" />
+      </div>
+      <div class="separator">
+        <li></li>
+        <li></li>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="pieChart">
+        <p>123</p>
+      </div>
+      <div class="divider">
+        <li></li>
+        <li></li>
+      </div>
+      <div class="barGraph">
+        <canvas id="example" width="400" height="200"></canvas>
+      </div>
+    </div>
+
+    <script>
+      var startX;
+      var startY;
+      var startWidth;
+      var startHight;
+
+      document
+        .querySelector(".separator")
+        .addEventListener("mousedown", startDrag); //監聽separator 分隔線的mousedown 事件，當鼠標按下separator 觸發startDrag函式
+      document
+        .querySelector(".divider")
+        .addEventListener("mousedown", startDrag);
+
+      function startDrag(e) {
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = parseInt(
+          window.getComputedStyle(document.querySelector(".scalable")).width,
+          10
+        );
+
+        startHight = parseInt(
+          window.getComputedStyle(document.querySelector(".pieChart")).hight,
+          10
+        );
+        document.documentElement.addEventListener("mousemove", onDrag);
+        document.documentElement.addEventListener("mouseup", stopDrag);
+      }
+      //監聽鼠標移動事件 mousemove事件  鼠標放開事件 mouseup事件
+      //parseInt 把寬度PX 轉換為十進制  width後帶10
+
+      function onDrag(e) {
+        let newWidth = startWidth + e.clientX - startX;
+        let newHight = startHight + e.clientY - startY;
+        document.querySelector(".scalable").style.width = newWidth + "px";
+        document.querySelector(".pieChart").style.hight = newHight + "px";
+      }
+      //點分隔線後 startX儲存座標
+
+      function stopDrag(e) {
+        document.documentElement.removeEventListener("mousemove", onDrag);
+        document.documentElement.removeEventListener("mouseup", stopDrag);
+      }
+      //放開鼠標會觸發stopDrag  停止監聽mousemove事件  mouseup事件
+
+      var ctx = document.getElementById("myChart");
+      var myChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["一月", "二月", "三月"],
+          datasets: [
+            {
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+              ],
+              borderColor: [
+                "rgba(255,99,132,1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+              ],
+              borderWidth: 1,
+              label: "銷售業績(百萬)",
+              data: [60, 49, 72],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
