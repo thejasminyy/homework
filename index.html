@@ -35,44 +35,65 @@
       var startWidth;
       var startHight;
 
+      // 監聽 separator 分隔線的 mousedown 事件，當鼠標按下 separator 觸發 startDragHorizontal 函式
       document
         .querySelector(".separator")
-        .addEventListener("mousedown", startDrag); //監聽separator 分隔線的mousedown 事件，當鼠標按下separator 觸發startDrag函式
+        .addEventListener("mousedown", startDragHorizontal);
+
+      // 監聽 divider 分隔線的 mousedown 事件，當鼠標按下 divider 觸發 startDragVertical 函式
       document
         .querySelector(".divider")
-        .addEventListener("mousedown", startDrag);
+        .addEventListener("mousedown", startDragVertical);
 
-      function startDrag(e) {
+      // 點分隔線後 startX 儲存座標
+      // 監聽鼠標移動事件 mousemove 事件 鼠標放開事件 mouseup 事件
+      // parseInt 把寬度 PX 轉換為十進制 width 後帶 10
+      function startDragHorizontal(e) {
         startX = e.clientX;
-        startY = e.clientY;
         startWidth = parseInt(
           window.getComputedStyle(document.querySelector(".scalable")).width,
           10
         );
 
-        startHight = parseInt(
-          window.getComputedStyle(document.querySelector(".pieChart")).hight,
+        document.documentElement.addEventListener("mousemove", onDragHorizontal);
+        document.documentElement.addEventListener("mouseup", stopDragHorizontal);
+      }
+
+      // 點分隔線後 startY 儲存座標
+      // 監聽鼠標移動事件 mousemove 事件 鼠標放開事件 mouseup 事件
+      // parseInt 把寬度 PX 轉換為十進制 Height 後帶 10
+      function startDragVertical(e) {
+        startY = e.clientY;
+        startHeight = parseInt(
+          window.getComputedStyle(document.querySelector(".barGraph")).height,
           10
         );
-        document.documentElement.addEventListener("mousemove", onDrag);
-        document.documentElement.addEventListener("mouseup", stopDrag);
+        document.documentElement.addEventListener("mousemove", onDragVertical);
+        document.documentElement.addEventListener("mouseup", stopDragVertical);
       }
-      //監聽鼠標移動事件 mousemove事件  鼠標放開事件 mouseup事件
-      //parseInt 把寬度PX 轉換為十進制  width後帶10
-
-      function onDrag(e) {
+      
+      function onDragHorizontal(e) {
         let newWidth = startWidth + e.clientX - startX;
-        let newHight = startHight + e.clientY - startY;
         document.querySelector(".scalable").style.width = newWidth + "px";
-        document.querySelector(".pieChart").style.hight = newHight + "px";
       }
-      //點分隔線後 startX儲存座標
 
-      function stopDrag(e) {
-        document.documentElement.removeEventListener("mousemove", onDrag);
-        document.documentElement.removeEventListener("mouseup", stopDrag);
+      function onDragVertical(e) {
+        let newHeight = startHeight - (e.clientY - startY);
+        document.querySelector(".barGraph").style.height = newHeight + "px";
       }
-      //放開鼠標會觸發stopDrag  停止監聽mousemove事件  mouseup事件
+
+      // 放開鼠標會觸發 stopDragHorizontl 停止監聽 mousemove 事件 mouseup 事件
+      function stopDragHorizontal(e) {
+        document.documentElement.removeEventListener("mousemove", onDragHorizontal);
+        document.documentElement.removeEventListener("mouseup", stopDragHorizontal);
+      }
+      
+
+      // 放開鼠標會觸發 stopDrag  停止監聽 mousemove 事件 mouseup 事件
+      function stopDragVertical(e) {
+        document.documentElement.removeEventListener("mousemove", onDragVertical);
+        document.documentElement.removeEventListener("mouseup", stopDragVertical);
+      }
 
       var ctx = document.getElementById("myChart");
       var myChart = new Chart(ctx, {
@@ -87,20 +108,19 @@
           ],
         },
       });
+
       var ctx = document.getElementById("myPieChart");
       var myPieChart = new Chart(ctx, {
         type: "pie",
         data: data = {
-        datasets: [
-          {
-            data: [10, 20, 30],
-          },
-        ],
-        labels: ["Red", "Yellow", "Blue"],
-      },
-      
+          datasets: [
+            {
+              data: [10, 20, 30],
+            },
+          ],
+          labels: ["Red", "Yellow", "Blue"],
+        },
       });
-      
     </script>
   </body>
 </html>
